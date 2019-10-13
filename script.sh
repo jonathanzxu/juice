@@ -154,69 +154,69 @@ function main {
 		systemctl enable fail2ban.service
 		echo "Fail2ban enabled"	
 	
-	echo "Hiding sensitive APACHE information"
-	sh -c "echo 'ServerTokens Prod' >> /etc/apache2/conf-available/custom.conf"
-	sh -c "echo 'ServerSignature Off' >> /etc/apache2/conf-available/custom.conf"
-	sh -c "echo 'TraceEnable Off' >> /etc/apache2/conf-available/custom.conf"
-	sh -c "echo 'Options all -Indexes' >> /etc/apache2/conf-available/custom.conf"
-	sh -c "echo 'Header unset ETag' >> /etc/apache2/conf-available/custom.conf"
-	sh -c "echo 'Header always unset X-Powered-By' >> /etc/apache2/conf-available/custom.conf"
-	sh -c "echo 'FileETag None' >> /etc/apache2/conf-available/custom.conf"
-	sudo a2enmod headers
-	sudo a2enconf custom.conf
-	sudo systemctl restart apache2.service
-	echo "Configured Apache"
+		echo "Hiding sensitive APACHE information"
+		sh -c "echo 'ServerTokens Prod' >> /etc/apache2/conf-available/custom.conf"
+		sh -c "echo 'ServerSignature Off' >> /etc/apache2/conf-available/custom.conf"
+		sh -c "echo 'TraceEnable Off' >> /etc/apache2/conf-available/custom.conf"
+		sh -c "echo 'Options all -Indexes' >> /etc/apache2/conf-available/custom.conf"
+		sh -c "echo 'Header unset ETag' >> /etc/apache2/conf-available/custom.conf"
+		sh -c "echo 'Header always unset X-Powered-By' >> /etc/apache2/conf-available/custom.conf"
+		sh -c "echo 'FileETag None' >> /etc/apache2/conf-available/custom.conf"
+		sudo a2enmod headers
+		sudo a2enconf custom.conf
+		sudo systemctl restart apache2.service
+		echo "Configured Apache"
 	
 	
 	
-	echo "Installing, enabling, and configuring mod_evasive"
-	sudo apt-get install libapache2-mod-evasive
-	sh -c "echo 'DOSPageCount 5' >> /etc/apache2/mods-enabled/evasive.conf"
-	sh -c "echo 'DOSSiteCount 50' >> /etc/apache2/mods-enabled/evasive.conf"
-	sh -c "echo 'DOSPageInterval 1' >> /etc/apache2/mods-enabled/evasive.conf"
-	sh -c "echo 'DOSSiteInterval 1' >> /etc/apache2/mods-enabled/evasive.conf"
-	sh -c "echo 'DOSBlockingPeriod 600' >> /etc/apache2/mods-enabled/evasive.conf"
-	sh -c "echo 'DOSLogDir "var/log/mod_evasive"' >> /etc/apache2/mods-enabled/evasive.conf"
-	sudo mkdir /var/log/mod_evasive
-	sudo chown -R www-data: /var/log/mod_evasive
-	sudo systemctl restart apache2.service
-	echo "Installed, enabled, and configured mod_evasive"
+		echo "Installing, enabling, and configuring mod_evasive"
+		sudo apt-get install libapache2-mod-evasive
+		sh -c "echo 'DOSPageCount 5' >> /etc/apache2/mods-enabled/evasive.conf"
+		sh -c "echo 'DOSSiteCount 50' >> /etc/apache2/mods-enabled/evasive.conf"
+		sh -c "echo 'DOSPageInterval 1' >> /etc/apache2/mods-enabled/evasive.conf"
+		sh -c "echo 'DOSSiteInterval 1' >> /etc/apache2/mods-enabled/evasive.conf"
+		sh -c "echo 'DOSBlockingPeriod 600' >> /etc/apache2/mods-enabled/evasive.conf"
+		sh -c "echo 'DOSLogDir "var/log/mod_evasive"' >> /etc/apache2/mods-enabled/evasive.conf"
+		sudo mkdir /var/log/mod_evasive
+		sudo chown -R www-data: /var/log/mod_evasive
+		sudo systemctl restart apache2.service
+		echo "Installed, enabled, and configured mod_evasive"
 	
-	echo "Installing MySQL service"
-	sudo mysql_secure_installation
+		echo "Installing MySQL service"
+		sudo mysql_secure_installation
 	
-	echo "Disabling remote MySQL access"
-	sh -c "echo 'bind-address = 127.0.0.1' >> /etc/mysql/mysql.conf.d/mysqld.cnf"
-	sudo systemctl restart mysql.service
-	echo "Disabled remote MySQL access"
+		echo "Disabling remote MySQL access"
+		sh -c "echo 'bind-address = 127.0.0.1' >> /etc/mysql/mysql.conf.d/mysqld.cnf"
+		sudo systemctl restart mysql.service
+		echo "Disabled remote MySQL access"
 	
-	#echo "Disabling LOCAL INFILE"
-	#echo "If LOCAL INFILE is included in the README, DO NOT DELETE"
-	#read -p "Are you sure? Type y or n" -n 1 -r
-	#if [[ $y =~ ^[Yy]$ ]]
-	#then
+		#echo "Disabling LOCAL INFILE"
+		#echo "If LOCAL INFILE is included in the README, DO NOT DELETE"
+		#read -p "Are you sure? Type y or n" -n 1 -r
+		#if [[ $y =~ ^[Yy]$ ]]
+		#then
 	
 
-	echo "Securing PHP"
-	php --ini | grep "Loaded Configuration File"
-	echo "Type in the php.ini file name"
-	read php.ini
-	phpinifile = php.ini
-	sh -c "echo 'expose_php = Off' >> $phpinifile"
-	sh -c "echo 'display_errors = Off' >> $phpinifile"
-	sh -c "echo 'mail.add_x_header = Off >> $phpinifile"
-	sudo systemctl restart apache2.service
+		echo "Securing PHP"
+		php --ini | grep "Loaded Configuration File"
+		echo "Type in the php.ini file name"
+		read php.ini
+		phpinifile = php.ini
+		sh -c "echo 'expose_php = Off' >> $phpinifile"
+		sh -c "echo 'display_errors = Off' >> $phpinifile"
+		sh -c "echo 'mail.add_x_header = Off >> $phpinifile"
+		sudo systemctl restart apache2.service
 	
-	echo "Disabling dangerous PHP functions"
-	sh -c "echo 'disable_functions = show_source,system,shell_exec,passthru,exec,phpinfo,popen,proc_open,allow_url_fopen,curl_exec,curl_multi' >> $phpinifile"
-	sh -c "echo 'allow_url_fopen=Off' >> $phpinifile"
-	sh -c "echo 'allow_url_include=Off' >> $phpinifile"
-	
-	echo "Disabling file uploads. IS THIS SPECIFIED IN README?"
-	read phpfileupld
-	sh -c "echo 'file_uploads=Off' >> $phpinifile
-	sh -c "echo 'upload_max_filesize=1M' >> $phpinifile
-	sudo systemctl restart apache2.service
+		echo "Disabling dangerous PHP functions"
+		sh -c "echo 'disable_functions = show_source,system,shell_exec,passthru,exec,phpinfo,popen,proc_open,allow_url_fopen,curl_exec,curl_multi' >> $phpinifile"
+		sh -c "echo 'allow_url_fopen=Off' >> $phpinifile"
+		sh -c "echo 'allow_url_include=Off' >> $phpinifile"
+		
+		echo "Disabling file uploads. IS THIS SPECIFIED IN README?"
+		read phpfileupld
+		sh -c "echo 'file_uploads=Off' >> $phpinifile
+		sh -c "echo 'upload_max_filesize=1M' >> $phpinifile
+		sudo systemctl restart apache2.service
 	fi
 	echo "Turning firewall on."
 	ufw enable
