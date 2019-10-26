@@ -4,10 +4,10 @@ function contains () {
 	local n=$#
 	local value=${!n}
 	for ((i=1;i < $#;i++)) {
-	if [ "${!i}" == "${value}" ]; then
-	echo "y"
-	return 0
-	fi
+			if [ "${!i}" == "${value}" ]; then
+			echo "y"
+			return 0
+		fi
 	}
 	echo "n"
 	return 1
@@ -21,7 +21,7 @@ function main {
 	echo -e "${RED}type CONTINUE to continue. anything else will exit program.${DEFAULT}"
 	read continue
 	if [ $continue != "CONTINUE" ]; then
-	exit
+		exit
 	fi
 	echo -e "${DEFAULT}WELCOME TO NECROS SCRIPT. \nBase user password:"
 	read passwd
@@ -141,7 +141,8 @@ function main {
 	
 	echo "Is LAMPSTACK a thing in the README? [y/n]"
 	read lampstack
-	if [$lampstack == "y"] then
+	if [$lampstack == "y"]
+	then
 		echo "Enabling fail2ban"
 		cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
 		sh -c "echo 'enabled = true' >> /etc/fail2ban/jail.local"
