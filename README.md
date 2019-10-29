@@ -1,2 +1,2 @@
 # scriptos
-linux team cyber patriot script
+ash script (convert pls)
