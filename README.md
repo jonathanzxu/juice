@@ -1,2 +1,2 @@
 # scriptos
-ash script (convert pls)
+bash script (convert pls)
