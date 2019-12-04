@@ -1,2 +1,2 @@
 # scriptos
-bash script (convert pls)
+no longer a bash script. use thejuice.py instead
