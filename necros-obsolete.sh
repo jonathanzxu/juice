@@ -1,5 +1,6 @@
 #!/bin/bash
 #LAST UPDATED 1/12/2019
+#DO NOT USE, HAS BEEN DEPRECATED. REFER TO THEJUICE.PY INSTEAD
 function contains () {
 	local n=$#
 	local value=${!n}
