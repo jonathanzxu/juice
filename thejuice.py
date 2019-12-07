@@ -27,7 +27,7 @@ def thejuice():
     run('cp ./lightdm.conf /usr/share/lightdm/lightdm.conf.d/50-unity-greeter.conf', shell=True)
     print("done.")
     print("Configuring firewall...")
-    run("ufw reset", shell=True)
+    run("ufw --force reset", shell=True)
     run("ufw deny 23", shell=True)
     run("ufw deny 2049", shell=True)
     run("ufw deny 515", shell=True)
@@ -108,7 +108,8 @@ def thejuice():
     badpackages = ["john", "netcat*", "bind9", "telnet*", "iodine", "kismet", "medusa", "hydra", "rsh-server", "ophcrack", "fcrackzip", "ayttm", "empathy", "nikto", "logkeys", "nfs-kernel-server", "vino", "tightvncserver", "rdesktop", "remmina", "vinagre", "ettercap", "knocker", "openarena-server", "wireshark", "minetest", "minetest-server", "nmap", "freeciv-server", "freeciv-client-gtk", "freeciv", "p0f", "snmpd", "at"]
     for package in badpackages:
         run(["apt", "-y", "purge", package], stdout=PIPE)
-    run("apt install --reinstall ubuntu-desktop", shell=True)
+    run("apt -y install --reinstall ubuntu-desktop", shell=True, stdout=PIPE)
+    run("apt -y autoremove", shell=True, stdout=PIPE)
     print("done.")
 
 
