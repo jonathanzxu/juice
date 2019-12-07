@@ -63,16 +63,16 @@ def thejuice():
     fetchadmins = run("awk -F: '/sudo/{print $4}' /etc/group", stdout=PIPE, shell=True)
     currentadmins = fetchadmins.stdout.decode().split(',')
     with open("admins.txt", "r") as admins:
-        authadmins = admins.readlines()
+        authadmins = admins.read().splitlines()
         for curradmin in currentadmins:
-            if curradmin not in authadmins:
-                run(["deluser", curradmin, "sudo"])
-                run(["deluser", curradmin, "adm"])
+            if curradmin.rstrip() not in authadmins:
+                run(["deluser", curradmin.rstrip(), "sudo"])
+                run(["deluser", curradmin.rstrip(), "adm"])
     print("unauthorized admins demoted.")
     fetchusers = run("awk -F: '($3>=1000)&&($1!=\"nobody\"){print $1}' /etc/passwd", stdout=PIPE, shell=True)
     currentusers = fetchusers.stdout.decode().splitlines()
     with open("users.txt", "r") as users:
-        authusers = users.readlines()
+        authusers = users.read().splitlines()
         for curruser in currentusers:
             if curruser not in authusers:
                 run(["deluser", curruser])
@@ -97,7 +97,7 @@ def thejuice():
     run(["chmod", "000", "/usr/bin/gcc"], stdout=PIPE, stderr=PIPE)
     run(["chmod", "000", "/usr/bin/*c++"], stdout=PIPE, stderr=PIPE)
     run(["chmod", "000", "/usr/bin/*g++"], stdout=PIPE, stderr=PIPE)
-    run(["echo tty1 > /etc/securetty"], shell=True)
+    run("echo tty1 > /etc/securetty", shell=True)
     run(["chmod", "0600", "/etc/securetty"])
     run(["chmod", "700", "/root"])
     print("file permissions set.")
@@ -105,7 +105,10 @@ def thejuice():
     run(["passwd", "-l", "root"])
     print("done.")
     print("Removing harmful software (KNOWN)...")
-    run("apt -y purge john netcat bind9 telnet* iodine kismet medusa hydra rsh-server ophcrack fcrackzip ayttm empathy nikto logkeys nfs-kernel-server vino tightvncserevr rdesktop remmina vinagre ettercap knocker openarena-server wireshark minetest minetest-server nmap freeciv-server freeciv-client-gtk freeciv p0f snmpd at", shell=True)
+    badpackages = ["john", "netcat*", "bind9", "telnet*", "iodine", "kismet", "medusa", "hydra", "rsh-server", "ophcrack", "fcrackzip", "ayttm", "empathy", "nikto", "logkeys", "nfs-kernel-server", "vino", "tightvncserver", "rdesktop", "remmina", "vinagre", "ettercap", "knocker", "openarena-server", "wireshark", "minetest", "minetest-server", "nmap", "freeciv-server", "freeciv-client-gtk", "freeciv", "p0f", "snmpd", "at"]
+    for package in badpackages:
+        run(["apt", "-y", "purge", package], stdout=PIPE)
+    run("apt install --reinstall ubuntu-desktop", shell=True)
     print("done.")
 
 
