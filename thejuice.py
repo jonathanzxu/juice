@@ -112,7 +112,7 @@ def thejuice():
 
 
 if os.geteuid() == 0:
-    if not (input('Did you complete forensics questions, read README, make authorized user (including admins) file named users.txt and authorized admin file named admins.txt? [yes/no]') == yes):
+    if not (input('Did you complete forensics questions, read README, make authorized user (including admins) file named users.txt and authorized admin file named admins.txt? [yes/no]') == "yes"):
         print("do it then")
         exit()
     thejuice()
