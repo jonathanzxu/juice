@@ -2,16 +2,29 @@ from subprocess import *
 import os
 import sys
 def thejuice():
+    print("updating repos...")
+    run("cp ./sources.list /etc/apt/sources.list", shell=True)
+    run("cp ./10periodic /etc/apt/apt.conf.d/10periodic", shell=True)
+    print("done.")
+    print("removing aliases...")
+    run("unalias -a", shell=True)
+    print("done.")
     print("installing needed packages...")
-    run('apt install -y libpam-cracklib ufw clamav', shell=True, stdout=PIPE)
+    run("apt install -y libpam-cracklib ufw clamav", shell=True, stdout=PIPE)
     print("done.")
     print("setting password & lockout policy...")
-    run('cp ./common-auth /etc/pam.d/common-auth', shell=True)
-    run('cp ./common-password /etc/pam.d/common-auth', shell=True)
-    run('cp ./login.defs /etc/login.defs', shell=True)
+    run("cp ./common-auth /etc/pam.d/common-auth", shell=True)
+    run("cp ./common-password /etc/pam.d/common-password", shell=True)
+    run("cp ./cracklib.conf /etc/cracklib/cracklib.conf", shell=True)
+    run("cp ./login.defs /etc/login.defs", shell=True)
+    print("done.")
+    print("configuring sysctl and applying changes...")
+    run("cp ./sysctl.conf /etc/sysctl.conf", shell=True)
+    run(["sysctl", "-ep"])
     print("done.")
     print("disabling guest account...")
     run('cp ./lightdm.conf /etc/lightdm/lightdm.conf', shell=True)
+    run('cp ./lightdm.conf /usr/share/lightdm/lightdm.conf.d/50-unity-greeter.conf', shell=True)
     print("done.")
     print("Configuring firewall...")
     run("ufw reset", shell=True)
@@ -88,7 +101,12 @@ def thejuice():
     run(["chmod", "0600", "/etc/securetty"])
     run(["chmod", "700", "/root"])
     print("file permissions set.")
-
+    print("disabling root login...")
+    run(["passwd", "-l", "root"])
+    print("done.")
+    print("Removing harmful software (KNOWN)...")
+    run("apt -y purge john netcat bind9 telnet* iodine kismet medusa hydra rsh-server ophcrack fcrackzip ayttm empathy nikto logkeys nfs-kernel-server vino tightvncserevr rdesktop remmina vinagre ettercap knocker openarena-server wireshark minetest minetest-server nmap freeciv-server freeciv-client-gtk freeciv p0f snmpd at", shell=True)
+    print("done.")
 
 
 
