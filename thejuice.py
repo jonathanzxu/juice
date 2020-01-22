@@ -77,10 +77,14 @@ def thejuice():
             if curruser not in authusers:
                 run(["deluser", curruser])
     print("unauthorized users deleted.")
-    print("settings secure passwords...")
+    print("settings secure passwords and chage...")
     for user in authusers:
         passchanger = Popen(["passwd", user], stdin=PIPE, stdout=PIPE)
         passchanger.communicate(input="s3cur3P@55\ns3cur3P@55".encode())
+        run(["chage", "-m", "6", user])
+        run(["chage", "-M", "15", user])
+        run(["chage", "-W", "7", user])
+        run(["chage", "-I", "5", user])
     print("all user passwords changed to: s3cur3P@55")
     print("setting important file permissions...")
     run(["chmod", "600", "/boot/grub/grub.cfg"])
