@@ -68,7 +68,7 @@ def thejuice():
             if curruser not in authusers:
                 run(["deluser", curruser])
         for user in authusers:
-            if user not in currusers:
+            if user not in currentusers:
                 run(["adduser", user, "--gecos", "\",,,\"", "--disabled-password"], stdout=PIPE)
                 pwdedit = user + ":s3cur3P@55"
                 editor = Popen(["chpasswd"], stdin=PIPE)
