@@ -71,7 +71,7 @@ def thejuice():
             if user not in currusers:
                 run(["adduser", user, "--gecos", "\",,,\"", "--disabled-password"], stdout=PIPE)
                 pwdedit = user + ":s3cur3P@55"
-                editor = Popen(["chpasswd", stdin=PIPE)
+                editor = Popen(["chpasswd"], stdin=PIPE)
                 editor.communicate(input=pwdedit.encode())
     print("unauthorized users deleted and authorized users added.")
     fetchadmins = run("awk -F: '/sudo/{print $4}' /etc/group", stdout=PIPE, shell=True)
