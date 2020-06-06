@@ -60,15 +60,6 @@ def thejuice():
     else:
         print("no plaintext password files found in /boot, /etc, /home, or /bin.")
     print("auditing authorized users and admins...")
-    fetchadmins = run("awk -F: '/sudo/{print $4}' /etc/group", stdout=PIPE, shell=True)
-    currentadmins = fetchadmins.stdout.decode().split(',')
-    with open("admins.txt", "r") as admins:
-        authadmins = admins.read().splitlines()
-        for curradmin in currentadmins:
-            if curradmin.rstrip() not in authadmins:
-                run(["deluser", curradmin.rstrip(), "sudo"])
-                run(["deluser", curradmin.rstrip(), "adm"])
-    print("unauthorized admins demoted.")
     fetchusers = run("awk -F: '($3>=1000)&&($1!=\"nobody\"){print $1}' /etc/passwd", stdout=PIPE, shell=True)
     currentusers = fetchusers.stdout.decode().splitlines()
     with open("users.txt", "r") as users:
@@ -76,7 +67,32 @@ def thejuice():
         for curruser in currentusers:
             if curruser not in authusers:
                 run(["deluser", curruser])
-    print("unauthorized users deleted.")
+        for user in authusers:
+            if user not in currusers:
+                run(["adduser", user, "--gecos", "\",,,\"", "--disabled-password"], stdout=PIPE)
+                pwdedit = user + ":s3cur3P@55"
+                editor = Popen(["chpasswd", stdin=PIPE)
+                editor.communicate(input=pwdedit.encode())
+    print("unauthorized users deleted and authorized users added.")
+    fetchadmins = run("awk -F: '/sudo/{print $4}' /etc/group", stdout=PIPE, shell=True)
+    currentadmins = fetchadmins.stdout.decode().split(',')
+    with open("admins.txt", "r") as admins:
+        authadmins = admins.read().splitlines()
+        for curradmin in currentadmins:
+            if curradmin.rstrip() not in authadmins:
+                run(["deluser", curradmin.rstrip(), "sudo"], stdout=PIPE)
+                run(["deluser", curradmin.rstrip(), "adm"], stdout=PIPE)
+        for admin in authadmins:
+            if admin not in currentadmins:
+                run(["adduser", admin, "sudo"], stdout=PIPE)
+                run(["adduser", admin, "adm"], stdout=PIPE)
+    print("unauthorized admins demoted and authorized admins promoted.")
+    fetchroots = run("awk -F: '($3==0){print $1}' /etc/passwd", stdout = PIPE, shell=True)
+    currroots = fetchroots.stdout.decode().splitlines()
+    for root in currroots:
+        if root != "root":
+            run(["deluser", root], stdout=PIPE)
+    print("unauthorized root accounts deleted.")
     print("settings secure passwords and chage...")
     for user in authusers:
         passchanger = Popen(["passwd", user], stdin=PIPE, stdout=PIPE)
