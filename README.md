@@ -1,4 +1,4 @@
-# scriptos
+# the juice
 no longer a bash script. use thejuice.py instead...
 python3.5 or above
 
