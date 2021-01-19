@@ -8,6 +8,7 @@ def thejuice():
     else:
         run("cp ./deb9/sources.list /etc/apt/sources.list", shell=True)
     run("cp ./10periodic /etc/apt/apt.conf.d/10periodic", shell=True)
+    run("apt update", shell=True)
     print("done.")
     print("removing aliases...")
     run("unalias -a", shell=True)
