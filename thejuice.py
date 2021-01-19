@@ -14,7 +14,7 @@ def thejuice():
     run("unalias -a", shell=True)
     print("done.")
     print("installing needed packages...")
-    run("apt install -y libpam-pwquality libpam-cracklib ufw clamav", shell=True, stdout=PIPE)
+    run("apt install -y libpam-pwquality libpam-cracklib ufw clamav sudo", shell=True, stdout=PIPE)
     print("done.")
     print("setting password & lockout policy...")
     run("cp ./ubu18/common-auth /etc/pam.d/common-auth", shell=True)
