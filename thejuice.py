@@ -3,7 +3,10 @@ import os
 import sys
 def thejuice():
     print("updating repos...")
-    run("cp ./ubu18/sources.list /etc/apt/sources.list", shell=True)
+    if input("type deb for debian or ubu for ubuntu18: ") == "ubu":
+        run("cp ./ubu18/sources.list /etc/apt/sources.list", shell=True)
+    else:
+        run("cp ./deb9/sources.list /etc/apt/sources.list", shell=True)
     run("cp ./10periodic /etc/apt/apt.conf.d/10periodic", shell=True)
     print("done.")
     print("removing aliases...")
