@@ -146,7 +146,7 @@ def thejuice():
 
 
 if os.geteuid() == 0:
-    if not (input('Did you INSTALL SUDO PACKAGE (debian), complete forensics questions, read README, make authorized user (including admins) file named users.txt and authorized admin file named admins.txt? [yes/no]') == "yes"):
+    if not (input('Did you INSTALL SUDO PACKAGE (apt install sudo) THEN ADD YOURSELF TO SUDO GROUP(adduser <username> sudo) (debian), complete forensics questions, read README, make authorized user (including admins) file named users.txt and authorized admin file named admins.txt? [yes/no]') == "yes"):
         print("do it then")
         exit()
     thejuice()
